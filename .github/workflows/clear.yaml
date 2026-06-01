@@ -1,0 +1,20 @@
+name: Delete history monthly
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 */30 * *' # Runs at 02:00, every 30 days. UTC time
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+    - uses: actions/checkout@v2
+    - name: cleanup
+      run: |
+        git config --global user.name 'github-actions'
+        git config --global user.email 'noreply@github.com'
+        git checkout --orphan new_branch
+        git commit -m "Clear history"
+        git branch -D master
+        git branch -m master
+        git push -f origin master
